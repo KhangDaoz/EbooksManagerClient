@@ -1,0 +1,59 @@
+EbookReaderProject/
+├── bin/                                    # Chứa Class
+│   └── ebookreader/
+│       ├── Main.class
+│       ├── ui/
+│       │   ├── MainGUI.class
+│       │   └── ReadingGUI.class
+│       ├── controller/
+│       │   ├── MainController.class
+│       │   └── ...
+│       ├── model/
+│       │   └── ...
+│       ├── service/
+│       │   └── ...
+│       └── api/
+│           └── ApiClient.class
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── ebookreader/                # <-- GÓI (PACKAGE) 
+│   │   │       ├── Main.java               # Khởi chạy ứng dụng
+│   │   │       │
+│   │   │       ├── ui/                     # Gói View (Giao diện)
+│   │   │       │   ├── MainGUI.java
+│   │   │       │   └── ReadingGUI.java
+│   │   │       │
+│   │   │       ├── controller/             # Gói Controller (Điều khiển)
+│   │   │       │   ├── MainController.java
+│   │   │       │   └── ReadingController.java
+│   │   │       │
+│   │   │       ├── model/                  # Gói Model (Đối tượng dữ liệu)
+│   │   │       │   ├── User.java
+│   │   │       │   ├── Book.java
+│   │   │       │   ├── Highlight.java
+│   │   │       │   └── UserBook.java 
+│   │   │       │
+│   │   │       ├── service/                # Gói Service (Xử lý logic)
+│   │   │       │   ├── AuthService.java    # Xử lý logic đăng nhập/JWT
+│   │   │       │   ├── BookService.java    # Lấy metadata, lưu tiến độ
+│   │   │       │   ├── HighlightService.java # Gửi/nhận Highlight qua API
+│   │   │       │   ├── BookmarkService.java  # Gửi/nhận Bookmark qua API
+│   │   │       │   ├── FileService.java    # Tải file .epub từ API
+│   │   │       │   └── EpubService.java    # Xử lý file .epub (đọc cục bộ)
+│   │   │       │
+│   │   │       └── api/                    # Gói API (Giao tiếp mạng)
+│   │   │           └── ApiClient.java      # Thực thi gọi REST/JWT
+│   │   │
+│   │   └── resources/
+│   │       ├── config/
+│   │       │   └── app.properties              # Chứa URL của Server
+│   │       └── icons/
+│
+├── lib/                                        # Thư viện của Client
+│   ├── epublib-core-latest.jar                 # (Bắt buộc) Để đọc file EPUB
+│   ├── okhttp-*.jar                            # (Bắt buộc) Để gọi API
+│   └── gson-*.jar (hoặc jackson-*.jar)         # (Bắt buộc) Để xử lý JSON
+│
+└── downloaded_books/                           # Nơi Client lưu file .epub đã tải về
+    └── book_123.epub
