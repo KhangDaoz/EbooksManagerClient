@@ -1,4 +1,4 @@
-package com.ebookmanager.model.InteractClasses;
+package com.ebookmanagerclient.ui;
 import javax.swing.*;
 
 

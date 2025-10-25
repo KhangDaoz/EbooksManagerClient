@@ -1,4 +1,4 @@
-package com.ebookmanager.model.InteractClasses;
+package com.ebookmanagerclient.ui;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.Loader;
