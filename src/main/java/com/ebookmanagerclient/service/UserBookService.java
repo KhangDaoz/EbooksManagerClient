@@ -47,6 +47,7 @@ public class UserBookService {
         apiClient.delete(
             ServiceType.USERBOOK,
             "api/users/books/" + bookId,
+            null,
             Object.class
         );
     }
