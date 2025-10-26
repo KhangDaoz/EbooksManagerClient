@@ -11,7 +11,8 @@ import java.io.OutputStream;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
-
+import java.io.File;
+import java.util.Map;
 
 /*
  * 
@@ -187,12 +188,15 @@ public class ApiClient {
         }
     }
 
-    public <T> T delete(ServiceType serviceType, String endpoint, Class<T> classOfT) throws IOException {
+    public <T> T delete(ServiceType serviceType, String endpoint,
+    Object body, Class<T> classOfT) throws IOException {
     String baseUrl = serviceUrls.get(serviceType);
+    String jsonBody = gson.toJson(body);
 
+    RequestBody requestBody= RequestBody.create(jsonBody, JSON);
     Request request = new Request.Builder()
             .url(baseUrl + endpoint)
-            .delete() 
+            .delete(requestBody) 
             .build();
 
     try (Response response = httpClient.newCall(request).execute()) {
@@ -235,7 +239,56 @@ public class ApiClient {
         }
     }
 
-    
+    public <T> T upload(ServiceType serviceType, String endPoint,
+    File file, Map<String, String> metadata, Class<T> classOfT)
+    throws IOException
+    {
+        String baseUrl = serviceUrls.get(serviceType);
+
+        MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
+
+
+        // ADD metadata into body of request
+        if (metadata != null)
+        {
+            for(Map.Entry<String, String> entry:metadata.entrySet())
+            {
+                multipartBuilder.addFormDataPart(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if(file!=null && file.exists())
+        {
+            String fileName = file.getName();
+            RequestBody fileBody = RequestBody.create(
+                file,
+                MediaType.parse("application/epub+zip")
+            );
+
+            multipartBuilder.addFormDataPart("ebookContent", 
+            fileName, fileBody);
+        }
+        else
+        {
+            throw new IOException("File does not exist");
+        }
+
+        RequestBody requestBody = multipartBuilder.build();
+
+        Request request = new Request.Builder()
+        .url(baseUrl + endPoint)
+        .post(requestBody).build();
+
+        try(Response res = httpClient.newCall(request).execute())
+        {
+            if(!res.isSuccessful())
+            {
+                handleApiError(res);
+            }
+            String resJson = res.body().string();
+            return gson.fromJson(resJson, classOfT);
+        }
+    }
     
     
     

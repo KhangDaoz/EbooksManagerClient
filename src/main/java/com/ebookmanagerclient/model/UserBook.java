@@ -4,12 +4,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserBook {
     private int id;
-    private int userId;
-    private int bookId;
-    private Book book;
-    @SerializedName("readingProgress")
-    private float readingProgress;
 
+    //private Book book;
+
+    @SerializedName("user_id") 
+    private int userId;
+
+    @SerializedName("book_id")
+    private int bookId;
+    
+    @SerializedName("reading_progress")
+    private double progress;
+    
+    @SerializedName("date_added")
+    private String dateAdded;
+    
     public UserBook() {
     }
 
@@ -17,7 +26,7 @@ public class UserBook {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
-        this.readingProgress = readingProgress;
+        this.progress = readingProgress;
     }
 
     public int getId() {
@@ -44,19 +53,29 @@ public class UserBook {
         this.bookId = bookId;
     }
 
-    public float getReadingProgress() {
-        return readingProgress;
+    public double getProgress() {
+        return progress;
     }
 
-    public void setReadingProgress(float readingProgress) {
-        this.readingProgress = readingProgress;
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 
-    public Book getBook() {
-        return book;
+    public String getDateAdded() {
+        return dateAdded;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
     }
+
+    
+
+    // public Book getBook() {
+    //     return book;
+    // }
+
+    // public void setBook(Book book) {
+    //     this.book = book;
+    // }
 }

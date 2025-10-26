@@ -9,26 +9,31 @@ public class HighLight {
     private int pageNumber;
     private int startPos;
     private int endPos;
-    private String backgroundColor;
-    private String noteContent;
+
 
     @SerializedName("locationCFI")
-    private String location;
+    private String locationCFI;
+
+    @SerializedName("highlightedContent")
+    private String highlightedContent;
+
+    @SerializedName("noteContent")
+    private String noteContent;
+
+    @SerializedName("backgroundColor")
+    private String backgroundColor;
 
     // Constructor
 
     public HighLight(){}
 
-    public HighLight(int highlightId, int userId, int bookId, int startPos, int endPos, String backgroundColor,
-            String noteContent, String location) {
-        this.highlightId = highlightId;
-        this.userId = userId;
-        this.bookId = bookId;
-        this.startPos = startPos;
-        this.endPos = endPos;
+    public HighLight(String locationCFI, String highlightContent, 
+    String noteContent, String backgroundColor) {
+        
+        this.highlightedContent = highlightContent;
         this.backgroundColor = backgroundColor;
         this.noteContent = noteContent;
-        this.location = location;
+        this.locationCFI = locationCFI;
     }
 
     public int getHighlightId() {
@@ -79,12 +84,20 @@ public class HighLight {
         this.endPos = endPos;
     }
 
-    public String getBackgroundColor() {
-        return backgroundColor;
+    public String getLocationCFI() {
+        return locationCFI;
     }
 
-    public void setBackgroundColor(String backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setLocationCFI(String locationCFI) {
+        this.locationCFI = locationCFI;
+    }
+
+    public String getHighlightedContent() {
+        return highlightedContent;
+    }
+
+    public void setHighlightedContent(String highlightedContent) {
+        this.highlightedContent = highlightedContent;
     }
 
     public String getNoteContent() {
@@ -95,12 +108,12 @@ public class HighLight {
         this.noteContent = noteContent;
     }
 
-    public String getLocation() {
-        return location;
+    public String getBackgroundColor() {
+        return backgroundColor;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     

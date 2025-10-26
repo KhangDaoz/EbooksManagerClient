@@ -85,7 +85,7 @@ public class AuthService {
         {
             // Call API /logout
             apiClient.delete(ServiceType.USER, 
-            "/api/sessions",
+            "/api/sessions", null,
             Object.class);    
 
         } catch (Exception e) {

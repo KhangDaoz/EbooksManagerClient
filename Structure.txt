@@ -1,59 +1,42 @@
-EbookReaderProject/
-├── bin/                                    # Chứa Class
-│   └── ebookreader/
-│       ├── Main.class
-│       ├── ui/
-│       │   ├── MainGUI.class
-│       │   └── ReadingGUI.class
-│       ├── controller/
-│       │   ├── MainController.class
-│       │   └── ...
-│       ├── model/
-│       │   └── ...
-│       ├── service/
-│       │   └── ...
-│       └── api/
-│           └── ApiClient.class
+EbooksManagerClient/
 ├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── ebookreader/                # <-- GÓI (PACKAGE) 
-│   │   │       ├── Main.java               # Khởi chạy ứng dụng
-│   │   │       │
-│   │   │       ├── ui/                     # Gói View (Giao diện)
-│   │   │       │   ├── MainGUI.java
-│   │   │       │   └── ReadingGUI.java
-│   │   │       │
-│   │   │       ├── controller/             # Gói Controller (Điều khiển)
-│   │   │       │   ├── MainController.java
-│   │   │       │   └── ReadingController.java
-│   │   │       │
-│   │   │       ├── model/                  # Gói Model (Đối tượng dữ liệu)
-│   │   │       │   ├── User.java
-│   │   │       │   ├── Book.java
-│   │   │       │   ├── Highlight.java
-│   │   │       │   └── UserBook.java 
-│   │   │       │
-│   │   │       ├── service/                # Gói Service (Xử lý logic)
-│   │   │       │   ├── AuthService.java    # Xử lý logic đăng nhập/JWT
-│   │   │       │   ├── BookService.java    # Lấy metadata, lưu tiến độ
-│   │   │       │   ├── HighlightService.java # Gửi/nhận Highlight qua API
-│   │   │       │   ├── BookmarkService.java  # Gửi/nhận Bookmark qua API
-│   │   │       │   ├── FileService.java    # Tải file .epub từ API
-│   │   │       │   └── EpubService.java    # Xử lý file .epub (đọc cục bộ)
-│   │   │       │
-│   │   │       └── api/                    # Gói API (Giao tiếp mạng)
-│   │   │           └── ApiClient.java      # Thực thi gọi REST/JWT
-│   │   │
-│   │   └── resources/
-│   │       ├── config/
-│   │       │   └── app.properties              # Chứa URL của Server
-│   │       └── icons/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── ebookmanagerclient/
+│       │           ├── api/                   # Gói API (Giao tiếp mạng)
+│       │           │   └── ApiClient.java     # Thực thi gọi REST/JWT
+│       │           │
+│       │           ├── controller/            # Gói Controller (Điều khiển)
+│       │           │   └── ...
+│       │           │
+│       │           ├── model/                 # Gói Model (Đối tượng dữ liệu)
+│       │           │   ├── Book.java         # Quản lý thông tin sách
+│       │           │   ├── HighLight.java    # Quản lý đánh dấu highlight
+│       │           │   ├── LoginResponse.java # Đối tượng phản hồi đăng nhập
+│       │           │   ├── User.java         # Quản lý thông tin người dùng
+│       │           │   └── UserBook.java     # Quản lý sách của người dùng
+│       │           │
+│       │           ├── service/               # Gói Service (Xử lý logic)
+│       │           │   ├── AuthService.java   # Xử lý logic đăng nhập/JWT
+│       │           │   └── EpubService.java   # Xử lý file .epub
+│       │           │
+│       │           └── ui/                    # Gói View (Giao diện)
+│       │               └── ...
+│       │
+│       └── resources/
+│           ├── config/
+│           │   └── app.properties            # Cấu hình URL các microservice
+│           └── icons/                        # Thư mục chứa icons
 │
-├── lib/                                        # Thư viện của Client
-│   ├── epublib-core-latest.jar                 # (Bắt buộc) Để đọc file EPUB
-│   ├── okhttp-*.jar                            # (Bắt buộc) Để gọi API
-│   └── gson-*.jar (hoặc jackson-*.jar)         # (Bắt buộc) Để xử lý JSON
+├── target/                                   # Thư mục build
+│   ├── classes/                             # Chứa file .class đã biên dịch
+│   ├── generated-sources/
+│   └── maven-status/
 │
-└── downloaded_books/                           # Nơi Client lưu file .epub đã tải về
-    └── book_123.epub
+├── downloaded_books/                         # Nơi lưu sách đã tải về
+│
+├── pom.xml                                  # File cấu hình Maven
+├── LICENSE                                  # Giấy phép MIT
+├── README.md                                # Tài liệu dự án
+└── Structure.txt                            # File mô tả cấu trúc dự án

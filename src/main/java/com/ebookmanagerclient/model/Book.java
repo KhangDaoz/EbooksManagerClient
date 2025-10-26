@@ -14,6 +14,7 @@ public class Book {
     @SerializedName("publishDate") // name of attribute in JSON file
     private String publishDate;
     
+
     // Setters
     
     public void setId(int id) {
