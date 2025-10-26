@@ -1,12 +1,11 @@
 package com.ebookmanagerclient.model;
 
-public class LoginResponse {
+public class TokenResponse {
     private String token;
-    private User user;
 
     // Constructor
 
-    public LoginResponse(){}
+    public TokenResponse(){}
 
     public String getToken() {
         return token;
@@ -16,12 +15,5 @@ public class LoginResponse {
         this.token = token;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
 }

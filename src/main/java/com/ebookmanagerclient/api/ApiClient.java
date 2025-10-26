@@ -35,7 +35,7 @@ public class ApiClient {
 
     // Map uses to store key and url
     private final Map<ServiceType, String> serviceUrls;
-    public static final MediaType JSON = MediaType.get("application/json; charset = utlf-8");
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
     
     
     
@@ -49,7 +49,7 @@ public class ApiClient {
         // Đọc file config
         try {
             Properties props = new Properties();
-            FileInputStream fis = new FileInputStream("src/target/classes/config/app.properties");
+            FileInputStream fis = new FileInputStream("src/main/resources/config/app.properties");
             props.load(fis);
 
             // (THAY ĐỔI) Đọc cả 4 URL và nạp vào Map
@@ -66,12 +66,20 @@ public class ApiClient {
             .addInterceptor(chain -> {
                 Request originalRequest = chain.request();
                 
-                // Các endpoint đăng nhập/đăng ký không cần token
-                String urlString = originalRequest.url().toString();
-                if (authToken == null || urlString.contains("/login") 
-                || urlString.contains("/register")) {
-                    return chain.proceed(originalRequest);
-                }
+                
+                // String urlString = originalRequest.url().toString();
+                // String method = originalRequest.method();
+
+                // boolean isLoginOrLogout = urlString.contains("/api/sessions");
+                // boolean isRegister = method.equals("POST") &&
+                // urlString.contains("/api/users");
+
+                // // Các endpoint đăng nhập/đăng ký không cần token
+
+                // if(authToken == null || isLoginOrLogout || isRegister)
+                // {
+                //     return chain.proceed(originalRequest);
+                // }
 
                 Request authorizedRequest = originalRequest.newBuilder()
                         .header("Authorization", "Bearer " + authToken)

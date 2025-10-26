@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.util.Map;
 
 
-public class HighLightService {
+public class HighlightService {
     
     private ApiClient apiClient;
 
-    public HighLightService()
+    public HighlightService()
     {
         this.apiClient = ApiClient.getInstance();
     }
@@ -25,7 +25,7 @@ public class HighLightService {
         );
     }
 
-    public HighLight createHighLight(int bookId, HighLight newHighlight)
+    public HighLight createHighlight(int bookId, HighLight newHighlight)
     throws IOException
     {
         
@@ -37,7 +37,7 @@ public class HighLightService {
         );
     }
 
-    public void deleteHightlight(int bookId, int highlightId) 
+    public void deleteHighlight(int bookId, int highlightId) 
     throws IOException
     {
         String endpoint = "/user/books/" + bookId + "/highlights";

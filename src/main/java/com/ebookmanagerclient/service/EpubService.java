@@ -25,7 +25,7 @@ import java.util.List;
  * closeBook()
  * resourceToString()
  */
-public class EpubService {
+public class EpubService implements BookInterfaceService {
     // Class Book comes from epublib, not Book class of user.
     private Book currentBook;
 
@@ -36,6 +36,7 @@ public class EpubService {
     }
 
     // Open a book from local filePath
+    @Override
     public void openBook(String filePath) throws IOException
     {
         EpubReader reader = new EpubReader();
@@ -51,6 +52,7 @@ public class EpubService {
         return this.currentBook==null;
     }
 
+    @Override
     public String getTitle()
     {
         if(!isBookOpen())
@@ -60,6 +62,7 @@ public class EpubService {
         return currentBook.getTitle().toString();
     }
 
+    @Override
     public List<String> getAuthors()
     {
         if(!isBookOpen())
@@ -75,6 +78,7 @@ public class EpubService {
 
     // Take table of contents
 
+    @Override
     public List<TOCReference> getTableOfContents()
     {
         if(!isBookOpen())
@@ -87,6 +91,7 @@ public class EpubService {
 
     // Take HTML content of certain chapter
 
+    @Override
     public String getContent(TOCReference tocReference) throws IOException
     {
         if(!isBookOpen() || tocReference==null)
@@ -98,26 +103,34 @@ public class EpubService {
         return resourceToString(resource);
     }
 
+    @Override
+    public int getSpineSize() {
+        if (!isBookOpen()) {
+            return 0;
+        }
+        // Spine là thứ tự đọc tuyến tính
+        return this.currentBook.getSpine().getSpineReferences().size();
+    }
 
-    //Take content of a Chapter based on order
+    // Take content of a Chapter based on order
+    @Override
+    public String getContentBySpineIndex(int spineIndex) throws IOException
+    {
+        if(!isBookOpen())
+        {
+            throw new IOException("Book is not open.");
+        }
 
-    // public String getContentBySpineIndex(int spineIndex) throws IOException
-    // {
-    //     if(!isBookOpen())
-    //     {
-    //         throw new IOException("Book is not open.");
-    //     }
+        List<SpineReference> spine = this.currentBook.getSpine().getSpineReferences();
 
-    //     List<SpineReference> spine = this.currentBook.getSpine().getSpineReferences();
+        if(spineIndex<0 || spineIndex >= spine.size())
+        {
+            throw new IndexOutOfBoundsException("Invalid Index: "+ spineIndex);
+        }
 
-    //     if(spineIndex<0 || spineIndex >= spine.size())
-    //     {
-    //         throw new IndexOutOfBoundsException("Invalid Index: "+ spineIndex);
-    //     }
-
-    //     SpineReference res = spine.get(spineIndex);
-    //     return resourceToString(res);
-    // }
+        SpineReference res = spine.get(spineIndex);
+        return res.toString();
+    }
 
 
     // Convert resource to String(HTML)
@@ -144,6 +157,7 @@ public class EpubService {
         }
     }
 
+    @Override
     public void closeBook()
     {
         this.currentBook = null;

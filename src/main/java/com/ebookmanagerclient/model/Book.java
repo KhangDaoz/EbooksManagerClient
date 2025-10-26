@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Book {
     private int id;
-    private String tittle;
+    private String title;
     private String author;
     
     // Map java atributes with JSON keys
@@ -20,8 +20,8 @@ public class Book {
     public void setId(int id) {
         this.id = id;
     }
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public void setTitle(String tittle) {
+        this.title = tittle;
     }
     public void setAuthor(String author) {
         this.author = author;
@@ -38,8 +38,8 @@ public class Book {
     public int getId() {
         return id;
     }
-    public String getTittle() {
-        return tittle;
+    public String getTitle() {
+        return title;
     }
     public String getAuthor() {
         return author;

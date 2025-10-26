@@ -3,7 +3,7 @@ package com.ebookmanagerclient.service;
 import com.ebookmanagerclient.api.ApiClient;
 import com.ebookmanagerclient.api.ApiClient.ServiceType;
 
-import com.ebookmanagerclient.model.LoginResponse;
+import com.ebookmanagerclient.model.TokenResponse;
 import com.ebookmanagerclient.model.User;
 
 import java.io.IOException;
@@ -50,22 +50,37 @@ public class AuthService {
 
             // Call API to USER port
             
-            LoginResponse response = apiClient.post(
+            TokenResponse tokenResponse = apiClient.post(
                 ServiceType.USER,
                 "/api/sessions",
                 requestBody,
-                LoginResponse.class
+                TokenResponse.class
             );
 
             // Save session
 
-            if(response != null && response.getToken() != null)
+            if(tokenResponse!= null && tokenResponse.getToken() != null)
             {
                 // Save token into apiClient
-                apiClient.setAuthToken(response.getToken());
+                apiClient.setAuthToken(tokenResponse.getToken());
                 
+                System.out.println(tokenResponse.getToken());
+                System.out.println("");
+
+
                 // Save information of current user
-                this.currentUser = response.getUser();
+                User user = apiClient.get(
+                    ServiceType.USER,
+                    "/api/users",
+                    User.class
+                );
+                
+                
+                this.currentUser = user;
+
+                System.out.println(currentUser.getId() + "\n"
+                + currentUser.getUsername());
+                System.out.println("");
                 return true;
             }
             return false;
@@ -120,9 +135,9 @@ public class AuthService {
     }
 
     // Take information of current user
-    public User gerCurrentUser()
+    public User getCurrentUser()
     {
-        return this.currentUser;
+        return currentUser;
     }
 
     public boolean changePassword(String oldPassword, String newPassword)

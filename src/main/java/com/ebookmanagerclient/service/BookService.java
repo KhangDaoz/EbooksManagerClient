@@ -4,6 +4,8 @@ import com.ebookmanagerclient.api.ApiClient;
 import com.ebookmanagerclient.api.ApiClient.ServiceType;
 import com.ebookmanagerclient.model.Book;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.io.File;
 import java.util.Map;
 
@@ -75,6 +77,25 @@ public class BookService {
             file,
             metadata,
             Book.class
+        );
+    }
+
+    // Update: Finding books
+    public Book[] searchCommunityBooks(String query) throws IOException {
+        String endpoint = "/api/books"; // Endpoint cơ bản
+
+        // Nếu có từ khóa tìm kiếm, thêm nó vào URL
+        if(query != null && !query.trim().isEmpty()) 
+        {
+            // Mã hóa từ khóa để đảm bảo URL hợp lệ (ví dụ: "Lập Trình" -> "L%E1%BA%ADp+Tr%C3%ACnh")
+            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
+            endpoint += "?q=" + encodedQuery;
+        } 
+
+        return apiClient.get(
+            ServiceType.BOOK, // Gọi đến BookHandler (Cổng 8081)
+            endpoint,
+            Book[].class
         );
     }
 }

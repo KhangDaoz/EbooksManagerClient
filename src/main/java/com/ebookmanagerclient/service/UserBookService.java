@@ -27,6 +27,16 @@ public class UserBookService {
         );
     }
 
+    public UserBook addBookToLibrary(int bookId) throws IOException {
+        return apiClient.post(
+            ServiceType.USERBOOK, 
+            "/api/users/books/" + bookId,
+            null, 
+            UserBook.class
+        );
+    }
+
+
     public UserBook updateReadingProgress(int bookId, float progress)
     throws IOException
     {

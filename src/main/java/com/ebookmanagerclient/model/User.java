@@ -1,7 +1,13 @@
 package com.ebookmanagerclient.model;
 
+import java.io.Serial;
+
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+    @SerializedName("userId")
     private int id;
+    @SerializedName("username")
     private String username;
 
     public User(){}
@@ -14,9 +20,15 @@ public class User {
 
     // Getters
 
-    public int getId(){ return id; }
+    public int getId()
+    { 
+        return id; 
+    }
 
-    public String getUsername() { return username ;}
+    public String getUsername() 
+    { 
+        return username;
+    }
 
     // Setters
 
