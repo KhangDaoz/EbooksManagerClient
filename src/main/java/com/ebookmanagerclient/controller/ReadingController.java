@@ -44,7 +44,7 @@ public class ReadingController {
         // Khởi tạo các service khác
         this.userBookService = new UserBookService();
         this.highlightService = new HighlightService();
-        this.authService = new AuthService(); // Để lấy userId
+        this.authService = AuthService.getInstance(); // Để lấy userId
 
         // Khởi tạo trạng thái
         this.currentFontSize = 14; // Cỡ chữ mặc định

@@ -36,7 +36,7 @@ public class MainController {
      */
     public MainController() {
         
-        this.authService = new AuthService();
+        this.authService = AuthService.getInstance();
         this.bookService = new BookService();
         this.userBookService = new UserBookService();
         this.fileService = new FileService();

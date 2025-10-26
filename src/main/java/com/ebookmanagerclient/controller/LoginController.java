@@ -11,7 +11,7 @@ public class LoginController {
 
     public LoginController()
     {
-        this.authService = new AuthService();
+        this.authService = AuthService.getInstance();
     }
 
     // Execute login request from Login UI

@@ -24,15 +24,26 @@ import java.util.Map;
  * checkUserLoggedIn()
  */
 public class AuthService {
+    private static AuthService instance;
     private ApiClient apiClient;
     private User currentUser;
     
     // Take instance of ApiClient
 
-    public AuthService()
+    private AuthService()
     {
         this.apiClient = ApiClient.getInstance();
         this.currentUser = null;
+    }
+
+    // The one instance
+    public static synchronized AuthService getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new AuthService();
+        }
+        return instance;
     }
 
     // Login managing
