@@ -3,11 +3,17 @@ package com.ebookmanagerclient.controller;
 import com.ebookmanagerclient.model.Book;
 import com.ebookmanagerclient.model.UserBook;
 import com.ebookmanagerclient.service.*; // Import tất cả service
+import com.ebookmanagerclient.ui.PdfGUI;
+import com.ebookmanagerclient.ui.ReadingGUI;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Controller (Bộ điều khiển) cho Màn hình chính (MainGUI).
@@ -158,23 +164,72 @@ public class MainController {
      * @param book Đối tượng Book (từ "Thư viện của tôi" hoặc "Đang đọc")
      */
     public void handleReadBook(Book book) {
+        BookInterfaceService bookReader = null;
         try {
             // 1. Tải file (FileService sẽ tự kiểm tra nếu file đã tồn tại)
             String localPath = fileService.downloadBook(book);
 
             // 2. Lấy trình đọc (Factory)
-            BookInterfaceService reader = BookReaderFactory.getReader(localPath);
-            
+            bookReader = BookReaderFactory.getReader(localPath);
             // 3. Mở sách (Code này sẽ gọi Giai đoạn tiếp theo)
-            // (Chúng ta sẽ khởi tạo ReadingController và ReadingGUI ở đây)
-            System.out.println("Sẵn sàng mở sách: " + localPath);
-            // ReadingController readingController = new ReadingController(reader, book, ...);
-            // new ReadingGUI(readingController).setVisible(true);
             
-        } catch (Exception e) {
+            bookReader.openBook(localPath);
+
+            System.out.println("Sẵn sàng mở sách: " + localPath);
+            ReadingController readingController = new ReadingController(bookReader, book);
+            
+            final BookInterfaceService finalreader = bookReader;
+
+            SwingUtilities.invokeLater(() -> 
+            {
+                if(finalreader instanceof EpubService)
+                {
+                    ReadingGUI readingFrame = new ReadingGUI(readingController);
+                    readingFrame.setVisible(true);
+                }
+                else if(finalreader instanceof PdfService)
+                {
+                    PdfGUI pdfFrame = new PdfGUI(readingController);
+                    pdfFrame.setVisible(true);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, 
+                    "Invalid file", "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                }
+            });
+        } catch (IOException e) 
+        {
             e.printStackTrace();
-            // UI cần hiển thị lỗi (ví dụ: "Không thể mở sách" hoặc "Định dạng không hỗ trợ")
+            JOptionPane.showMessageDialog(null,
+                "Lỗi I/O khi mở sách:\n" + e.getMessage(),
+                "Lỗi Đọc Sách",
+                JOptionPane.ERROR_MESSAGE);
+                // Đảm bảo đóng reader nếu nó đã được mở một phần (hiếm khi xảy ra ở đây)
+                if (bookReader != null) 
+                {
+                bookReader.closeBook();    
+                }   
         }
+        catch (IllegalArgumentException e)
+        {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+            "Lỗi định dạng file:\n" + e.getMessage(),
+            "Lỗi Định Dạng",
+            JOptionPane.ERROR_MESSAGE);
+        }
+        catch (Exception e) { // Bắt các lỗi không mong muốn khác
+        e.printStackTrace();
+         JOptionPane.showMessageDialog(null,
+                "Lỗi không xác định khi mở sách:\n" + e.getMessage(),
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE);
+        if (bookReader != null) {
+            bookReader.closeBook();
+        }
+    }
     }
     
     /**

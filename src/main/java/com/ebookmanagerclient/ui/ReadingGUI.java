@@ -247,7 +247,7 @@ public class ReadingGUI extends JFrame {
     }
     
     private void handlePrevPage() {
-        String html = (String)controller.getPrevPageContent();
+        String html = (String)controller.getPreviousPageContent();
         if (html != null) {
             contentPane.setText(html);
             applyZoom(currentFontSize);

@@ -75,6 +75,14 @@ public class ReadingController {
      * epub: html
      * pdf: bufferedimage
      */
+    public int getCurrentPageIndex()
+    {
+        return currentSpineIndex;
+    }
+    public int getTotalPages()
+    {
+        return readerService.getSpineSize();
+    }
     public Object getInitialContent() {
         try {
 
@@ -114,7 +122,7 @@ public class ReadingController {
     /*
      * get previous page content
      */
-    public Object getPrevPageContent()
+    public Object getPreviousPageContent()
     {
         if(currentSpineIndex > 0)
         {

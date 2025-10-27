@@ -17,8 +17,12 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 import java.io.File;         // Thêm import
+import java.io.IOException;
+
 import com.ebookmanagerclient.service.BookInterfaceService; // Thêm import
 import com.ebookmanagerclient.service.BookReaderFactory; // Thêm import
+import com.ebookmanagerclient.service.EpubService;
+import com.ebookmanagerclient.service.PdfService;
 import com.ebookmanagerclient.controller.ReadingController; // Thêm import
 /**
  * Lớp Giao diện (View) cho Màn hình chính (Dashboard).
@@ -113,25 +117,74 @@ public class MainGUI extends JFrame {
 
 
     // THÊM HÀM MỚI NÀY
-    private void handleOpenLocalFile() {
+    private void handleOpenLocalFile() 
+    {
         JFileChooser fileChooser = new JFileChooser();
-        // (Thiết lập file chooser...)
+        fileChooser.setDialogTitle("Chọn file sách để đọc");
+        // (Tùy chọn: Thêm bộ lọc file .epub, .pdf)
+        // Example filter:
+        // FileNameExtensionFilter filter = new FileNameExtensionFilter("Ebook Files (.epub, .pdf)", "epub", "pdf");
+        // fileChooser.setFileFilter(filter);
+
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String localPath = selectedFile.getAbsolutePath();
+            BookInterfaceService reader = null; // Khai báo ở đây để dùng trong catch/finally
+
             try {
-                BookInterfaceService reader = BookReaderFactory.getReader(localPath);
+                // 1. Lấy trình đọc (Factory)
+                reader = BookReaderFactory.getReader(localPath);
+
+                // 2. Mở sách (Nạp dữ liệu)
                 reader.openBook(localPath);
-                // Tạo Controller dùng constructor MỚI (chỉ cần reader)
+
+                // 3. Tạo Controller (dùng Constructor MỚI cho sách local)
+                // Constructor này tự tạo một "Book ảo" với ID=0
                 ReadingController readingController = new ReadingController(reader);
-                // Mở GUI
+
+                // --- BẮT ĐẦU PHẦN KIỂM TRA VÀ MỞ GUI ---
+                // 4. Chọn và hiển thị GUI phù hợp
+                final BookInterfaceService finalReader = reader; // Cần biến final cho lambda
                 SwingUtilities.invokeLater(() -> {
-                    ReadingGUI readingFrame = new ReadingGUI(readingController);
-                    readingFrame.setVisible(true);
+                    if (finalReader instanceof EpubService) {
+                        // Mở GUI cho EPUB
+                        ReadingGUI readingFrame = new ReadingGUI(readingController);
+                        readingFrame.setVisible(true);
+                    } else if (finalReader instanceof PdfService) {
+                        // Mở GUI cho PDF
+                        PdfGUI pdfFrame = new PdfGUI(readingController);
+                        pdfFrame.setVisible(true);
+                    } else {
+                        // Trường hợp Factory trả về loại không xác định
+                        JOptionPane.showMessageDialog(this, // Dùng 'this' vì đang ở trong MainGUI
+                                "Loại trình đọc không xác định.",
+                                "Lỗi Mở Sách",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 });
-            } catch (Exception e) {
-                // (Xử lý lỗi và hiển thị JOptionPane...)
+                // --- KẾT THÚC PHẦN KIỂM TRA VÀ MỞ GUI ---
+
+            } catch (IOException e) { // Lỗi mở sách (openBook) hoặc I/O khác
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Lỗi I/O khi mở sách:\n" + e.getMessage(),
+                        "Lỗi Đọc Sách",
+                        JOptionPane.ERROR_MESSAGE);
+                if (reader != null) reader.closeBook(); // Đảm bảo đóng nếu đã mở dở
+            } catch (IllegalArgumentException e) { // Lỗi từ Factory (định dạng không hỗ trợ)
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Lỗi định dạng file:\n" + e.getMessage(),
+                        "Lỗi Định Dạng",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) { // Bắt các lỗi không mong muốn khác
+                e.printStackTrace();
+                 JOptionPane.showMessageDialog(this,
+                        "Lỗi không xác định khi mở sách cục bộ:\n" + e.getMessage(),
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                if (reader != null) reader.closeBook();
             }
         }
     }

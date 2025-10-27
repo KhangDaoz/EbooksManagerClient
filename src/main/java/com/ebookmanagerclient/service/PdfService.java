@@ -32,7 +32,26 @@ public class PdfService implements BookInterfaceService {
         try
         {
             document = Loader.loadPDF(new File(filePath));
+            if(document != null)
+            {
+                System.out.println("DOCUMENT EXIST!!!!");
+            }
+            try
+            {
+                renderer = new PDFRenderer(document);
+                if(renderer !=  null)
+                {
+                    System.out.println("RENDERER LOADED!!");
+                }
+            }
+            catch(Exception e)
+            {
+                if(document!=null) document.close();
+                throw new IOException("Cannot create Renderer", e);
+            }
+
         }
+
         catch(IOException e)
         {
             document = null;
