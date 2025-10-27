@@ -49,27 +49,96 @@ public class ReadingController {
         // Khởi tạo trạng thái
         this.currentFontSize = 14; // Cỡ chữ mặc định
         this.currentSpineIndex = 0; // Luôn bắt đầu từ chương 0
-        this.totalSpineSize = readerService.getSpineSize();
+        //this.totalSpineSize = readerService.getSpineSize();
+    }
+
+    public ReadingController(BookInterfaceService readerService)
+    {
+        this(readerService, createLocalBook());    
+    }
+
+    public static Book createLocalBook()
+    {
+        Book localBook = new Book();
+        localBook.setId(-1);
+        localBook.setTitle("LocalBook");
+        localBook.setAuthor("N/A");
+        return localBook;
     }
 
     // --- 1. Tải Dữ liệu Ban đầu (Cho UI gọi) ---
 
     /**
-     * Lấy nội dung HTML của trang đầu tiên để hiển thị.
+     * Get content of Book
+     * Type of class is Object because each type of files 
+     * has a certain type of content.
+     * epub: html
+     * pdf: bufferedimage
      */
-    public String getInitialContent() {
+    public Object getInitialContent() {
         try {
+
+            this.totalSpineSize = readerService.getSpineSize();
             return readerService.getContentBySpineIndex(currentSpineIndex);
+
         } catch (IOException e) {
             e.printStackTrace();
             return "<html><body><h1>Không thể tải sách</h1></body></html>";
         }
     }
 
+    /*
+     * Get next page content
+     */
+
+    public Object getNextPageContent()
+    {
+        if(currentSpineIndex< totalSpineSize-1)
+        {
+            currentSpineIndex ++;
+            try
+            {
+                saveCurrentProgress();
+                return readerService.getContentBySpineIndex(currentSpineIndex);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                currentSpineIndex--;
+                return "Cannot load next page";
+            }
+        }
+        return null;
+    }
+
+    /*
+     * get previous page content
+     */
+    public Object getPrevPageContent()
+    {
+        if(currentSpineIndex > 0)
+        {
+            currentSpineIndex --;
+            try
+            {
+                saveCurrentProgress();
+                return readerService.getContentBySpineIndex(currentSpineIndex);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                currentSpineIndex++;
+                return "Cannot load next page";
+            }
+        }
+        return null;
+    }
     /**
      * Lấy tất cả highlight/note cũ của sách này.
      */
     public List<HighLight> loadHighlights() {
+        if(book.getId()==-1) return new ArrayList<>();
+        
         try {
             return List.of(highlightService.getHighlightsForBook(book.getId()));
         } catch (IOException e) {
@@ -78,47 +147,10 @@ public class ReadingController {
         }
     }
 
-    // --- 2. Điều khiển Trang (UI gọi) ---
-
-    /**
-     * Xử lý logic khi người dùng nhấn "Trang tiếp theo".
-     * @return Nội dung HTML của trang tiếp theo, hoặc null nếu đã ở trang cuối.
-     */
-    public String goToNextPage() {
-        if (currentSpineIndex < totalSpineSize - 1) {
-            currentSpineIndex++;
-            try {
-                // Tự động lưu tiến độ mỗi khi lật trang
-                saveCurrentProgress();
-                return (String) readerService.getContentBySpineIndex(currentSpineIndex);
-            } catch (IOException e) {
-                e.printStackTrace();
-                currentSpineIndex--; // Quay lại trang cũ nếu lỗi
-                return null;
-            }
-        }
-        return null; // Đã ở trang cuối
-    }
-
-    /**
-     * Xử lý logic khi người dùng nhấn "Trang trước".
-     * @return Nội dung HTML của trang trước, hoặc null nếu đã ở trang đầu.
-     */
-    public String goToPreviousPage() {
-        if (currentSpineIndex > 0) {
-            currentSpineIndex--;
-            try {
-                return (String) readerService.getContentBySpineIndex(currentSpineIndex);
-            } catch (IOException e) {
-                e.printStackTrace();
-                currentSpineIndex++; // Quay lại trang cũ nếu lỗi
-                return null;
-            }
-        }
-        return null; // Đã ở trang đầu
-    }
 
     // --- 3. Điều khiển Zoom (UI gọi) ---
+
+    // Do not use zoom function for pdf file. (image)
 
     /**
      * Xử lý logic khi người dùng "Zoom In" (Ctrl + Cuộn lên).
@@ -150,6 +182,8 @@ public class ReadingController {
     * @param color Màu sắc (ví dụ: "yellow")
     */
     public HighLight handleCreateHighlight(int selectionStart, String selectedText, String color) {
+        if(book.getId()==-1) return null;
+
         // TẠM THỜI: Chúng ta sẽ dùng offset làm CFI.
         // (Trong tương lai, bạn sẽ dùng EpubService để biến
         // currentSpineIndex + selectionStart thành một CFI thật)
@@ -165,6 +199,8 @@ public class ReadingController {
     }
 
     public HighLight handleCreateNote(int selectionStart, String selectedText, String userNote) {
+        if(book.getId()==-1) return null;
+        
         // TẠM THỜI: Dùng offset làm CFI
         String locationCFI = "temp-cfi-spine" + currentSpineIndex + "/offset" + selectionStart;
 
@@ -182,6 +218,8 @@ public class ReadingController {
      * @param highlightId ID của highlight cần xóa
      */
     public boolean handleDeleteHighlight(int highlightId) {
+        if(book.getId()==-1) return false;
+        
         try {
             highlightService.deleteHighlight(book.getId(), highlightId);
             return true;
@@ -207,6 +245,7 @@ public class ReadingController {
      * Hàm nội bộ (private) để tính toán và lưu tiến độ.
      */
     private void saveCurrentProgress() {
+        if(book.getId()==-1) return;
         if (totalSpineSize == 0) {
             return; // Tránh lỗi chia cho 0
         }

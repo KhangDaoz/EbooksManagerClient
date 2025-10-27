@@ -3,7 +3,11 @@ package com.ebookmanagerclient.ui;
 import com.ebookmanagerclient.controller.MainController;
 import com.ebookmanagerclient.model.Book;
 
-
+// Thêm import
+// Thêm import
+// Thêm import
+// Thêm import
+// Thêm import
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableColumnModel;
@@ -12,7 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
-
+import java.io.File;         // Thêm import
+import com.ebookmanagerclient.service.BookInterfaceService; // Thêm import
+import com.ebookmanagerclient.service.BookReaderFactory; // Thêm import
+import com.ebookmanagerclient.controller.ReadingController; // Thêm import
 /**
  * Lớp Giao diện (View) cho Màn hình chính (Dashboard).
  * Sở hữu một MainController để xử lý logic.
@@ -88,10 +95,46 @@ public class MainGUI extends JFrame {
         getContentPane().add(headerPanel, BorderLayout.NORTH);
         getContentPane().add(splitPane, BorderLayout.CENTER);
 
+        // THÊM MỚI: Tạo Menu Bar
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("Tệp");
+        JMenuItem openLocalFileItem = new JMenuItem("Mở sách từ máy tính...");
+        fileMenu.add(openLocalFileItem);
+        menuBar.add(fileMenu);
+        this.setJMenuBar(menuBar); // Gắn menu vào JFrame
+
+        // Gắn sự kiện
+        openLocalFileItem.addActionListener(e -> handleOpenLocalFile());
+
         // 8. Tải dữ liệu ban đầu
         loadInitialData();
     }
 
+
+
+    // THÊM HÀM MỚI NÀY
+    private void handleOpenLocalFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        // (Thiết lập file chooser...)
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String localPath = selectedFile.getAbsolutePath();
+            try {
+                BookInterfaceService reader = BookReaderFactory.getReader(localPath);
+                reader.openBook(localPath);
+                // Tạo Controller dùng constructor MỚI (chỉ cần reader)
+                ReadingController readingController = new ReadingController(reader);
+                // Mở GUI
+                SwingUtilities.invokeLater(() -> {
+                    ReadingGUI readingFrame = new ReadingGUI(readingController);
+                    readingFrame.setVisible(true);
+                });
+            } catch (Exception e) {
+                // (Xử lý lỗi và hiển thị JOptionPane...)
+            }
+        }
+    }
     /**
      * Tạo phần Header
      */

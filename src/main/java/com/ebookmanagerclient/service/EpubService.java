@@ -2,6 +2,7 @@ package com.ebookmanagerclient.service;
 
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
+import nl.siegmann.epublib.domain.ResourceReference;
 import nl.siegmann.epublib.domain.SpineReference;
 import nl.siegmann.epublib.domain.TOCReference;
 import nl.siegmann.epublib.epub.EpubReader;
@@ -92,14 +93,14 @@ public class EpubService implements BookInterfaceService {
     // Take HTML content of certain chapter
 
     @Override
-    public String getContent(TOCReference tocReference) throws IOException
+    public Object getContent(Object tocReference) throws IOException
     {
         if(!isBookOpen() || tocReference==null)
         {
             throw new IOException("This chapter is Blank!!!");
         }
 
-        Resource resource = tocReference.getResource();
+        Resource resource = ((ResourceReference) tocReference).getResource();
         return resourceToString(resource);
     }
 

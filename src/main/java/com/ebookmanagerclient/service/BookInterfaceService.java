@@ -14,14 +14,14 @@ public interface BookInterfaceService {
 
     List<String> getAuthors();
 
-    List<TOCReference> getTableOfContents();
+    List<?> getTableOfContents();
 
-    String getContent(TOCReference tocReference) throws IOException;
+    Object getContent(Object chapterRef) throws IOException;
 
     void closeBook();
 
     int getSpineSize();
 
-     public String getContentBySpineIndex(int spineIndex) throws IOException;
+    Object getContentBySpineIndex(int spineIndex) throws IOException;
 
 }

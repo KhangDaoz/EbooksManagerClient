@@ -28,8 +28,8 @@ public class BookReaderFactory {
                 
             case "pdf":
                 // (TƯƠNG LAI)
-                // return new PdfService(); 
-                throw new IllegalArgumentException("Định dạng PDF chưa được hỗ trợ.");
+                return new PdfService(); 
+                //throw new IllegalArgumentException("Định dạng PDF chưa được hỗ trợ.");
 
             default:
                 throw new IllegalArgumentException("Định dạng file không được hỗ trợ: " + extension);

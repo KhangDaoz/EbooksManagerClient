@@ -226,7 +226,7 @@ public class ReadingGUI extends JFrame {
         // Tải nội dung đầu tiên từ Controller
         // (Chúng ta sẽ sửa hàm controller để nó trả về cả HTML và thông tin trang)
         // (Tạm thời, chúng ta sẽ gọi hàm cũ)
-        String html = controller.getInitialContent();
+        String html = (String)controller.getInitialContent();
         contentPane.setText(html);
         applyZoom(this.currentFontSize); // Áp dụng CSS
         
@@ -238,7 +238,7 @@ public class ReadingGUI extends JFrame {
     // --- Các hàm gọi Controller ---
 
     private void handleNextPage() {
-        String html = controller.goToNextPage();
+        String html = (String)controller.getNextPageContent();
         if (html != null) {
             contentPane.setText(html);
             applyZoom(currentFontSize);
@@ -247,7 +247,7 @@ public class ReadingGUI extends JFrame {
     }
     
     private void handlePrevPage() {
-        String html = controller.goToPreviousPage();
+        String html = (String)controller.getPrevPageContent();
         if (html != null) {
             contentPane.setText(html);
             applyZoom(currentFontSize);
