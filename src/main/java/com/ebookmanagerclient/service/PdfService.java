@@ -125,8 +125,7 @@ public class PdfService implements BookInterfaceService {
             throw new IndexOutOfBoundsException("Chỉ số trang PDF không hợp lệ: " + pageIndex);
         }
         // Render trang tại pageIndex thành ảnh
-        // 300 DPI là chất lượng khá tốt
-        return renderer.renderImageWithDPI(pageIndex, 150);
+        return renderer.renderImageWithDPI(pageIndex, 300);
     }
     /**
      * Lấy tổng số trang của PDF.

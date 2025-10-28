@@ -1,7 +1,5 @@
 package com.ebookmanagerclient.ui;
 
-// Import GUI đầu tiên mà chúng ta sẽ chạy
-import com.ebookmanagerclient.ui.LoginGUI; 
 import javax.swing.SwingUtilities;
 
 /**

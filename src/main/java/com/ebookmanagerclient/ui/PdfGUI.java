@@ -72,18 +72,24 @@ public class PdfGUI extends JFrame {
         if (imagePanel.currentImage == null) return;
 
         // Lấy kích thước vùng hiển thị của JScrollPane
-        Dimension viewSize = scrollPane.getViewport().getViewSize();
+        Dimension viewSize = scrollPane.getViewport().getSize();
         int availableHeight = viewSize.height;
-        if (availableHeight <= 0) return; // Chưa có kích thước
+        int availableWidth = viewSize.width;
+        if (availableHeight*availableWidth <= 0) return; // Chưa có kích thước
 
         // Lấy chiều cao gốc của ảnh
         int imageHeight = imagePanel.currentImage.getHeight();
-        if (imageHeight <= 0) return;
+        int imageWidth = imagePanel.currentImage.getWidth();
+        if (imageHeight*imageWidth <= 0) return;
 
         // Tính tỉ lệ zoom cần thiết
         // Trừ đi một chút lề (padding) nếu muốn
-        double zoomFactor = (double) availableHeight / imageHeight;
-
+        double zoomFactor = Math.min(
+           (double) availableHeight/imageHeight,
+           (double) availableWidth/imageWidth     
+        );
+        System.out.println((double) availableHeight/imageHeight + "and" +
+           (double) availableWidth/imageWidth);
         // Đặt mức zoom mới và vẽ lại
         this.currentZoom = zoomFactor;
         imagePanel.setImage(imagePanel.currentImage); // Gọi lại để cập nhật preferredSize và repaint
@@ -146,12 +152,12 @@ public class PdfGUI extends JFrame {
                     if (e.getWheelRotation() > 0) { // Cuộn xuống
                         // Nếu đã ở cuối trang thì mới lật trang
                         if (verticalScrollBar.getValue() == verticalScrollBar.getMaximum() - verticalScrollBar.getVisibleAmount()) {
-                            handleNextPage();
+                            //handleNextPage();
                         }
                     } else { // Cuộn lên
                         // Nếu đã ở đầu trang thì mới lật trang
                         if (verticalScrollBar.getValue() == verticalScrollBar.getMinimum()) {
-                            handlePrevPage();
+                            //handlePrevPage();
                         }
                     }
                 }
